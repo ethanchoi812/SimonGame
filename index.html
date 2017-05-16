@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Simon Game</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<div class="main-container">
+		<figure id="green" class="quarter green"></figure>
+		<figure id="red" class="quarter red"></figure>
+		<figure class="controls">
+			<span class="display">1</span>
+			<a id="start" class="button">Start</a>
+			<a id="strict" class="button">Strict</a>
+		</figure>
+		<figure id="yellow" class="quarter yellow"></figure>
+		<figure id="blue" class="quarter blue"></figure>
+	</div>
+	<div id="soundElmt">
+		<audio id="green-sound" controls hidden>
+		 	<source src="https://s3.amazonaws.com/freecodecamp/simonSound1.mp3" type="audio/mpeg">
+			Your browser does not support the audio element.
+		</audio>
+		<audio id="red-sound" controls hidden>
+			<source src="https://s3.amazonaws.com/freecodecamp/simonSound2.mp3" type="audio/mpeg">
+		</audio>
+		<audio id="yellow-sound" controls hidden>
+			<source src="https://s3.amazonaws.com/freecodecamp/simonSound3.mp3" type="audio/mpeg">
+		</audio>
+	    <audio id="blue-sound" controls hidden>
+		 	<source src="https://s3.amazonaws.com/freecodecamp/simonSound4.mp3" type="audio/mpeg">
+		 </audio>
+	</div>
+	<script type="text/javascript" src="script.js"></script>
+</body>
+</html>
