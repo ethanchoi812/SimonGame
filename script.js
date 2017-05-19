@@ -23,58 +23,73 @@ var Model = {
 
 	colorsElmt: ["green", "red", "blue", "yellow"],
 	
-	seq_count: 1,
+	count: 1,
+
+	setCounter: function(){
+		
+		var counter = document.getElementById("counter");
+		counter.innerHTML = Model.count;
+	},
+
+	setMsg: function(msg){
+		
+		document.getElementById("msg").innerHTML = msg;
+		
+		setTimeout(function(){
+			document.getElementById("msg").innerHTML = "";
+		},1500);
+	},
 	
-	playEffect: function(color){
-
-		var el = document.getElementById(color);
-
-		el.classList.add(color + "-new");
-		document.getElementById(color + "-sound").play();
+	playEffect: function(color,n){
 
 		setTimeout(function(){
-			el.classList.remove(color + "-new");
-		}, 500);
+
+			var el = document.getElementById(color);
+
+			el.classList.add(color + "-new");
+			document.getElementById(color + "-sound").play();
+			
+			setTimeout(function(){
+				el.classList.remove(color + "-new");
+			}, 500);
+
+		}, 1000*n);
 	},
 
 	generateSeq: function(){
 
-		var n = Math.floor(Math.random()*3);
+		var n = Math.floor(Math.random()*4);
 		Model.players[0].sequence.push(Model.colorsElmt[n]);
+		console.log(Model.players[0].sequence);
 		Model.playSeq();
 	},
 
 	playSeq: function(){
-
-		for(var i=0; i<Model.players[0].sequence.length; i++){
+		
+		for(var k=0; k<Model.players[0].sequence.length; k++){
 			
-			setTimeout(Model.playEffect(Model.players[0].sequence[i]),
-				1000);
+			Model.playEffect(Model.players[0].sequence[k], k);
 		}
 	},
-
 	
 	init: function(){
 
 		Model.players[0].sequence = [];
 		Model.players[1].sequence = [];
-		seq_count = 1;
+		Model.count = 1;
+		Model.setCounter();
 		Model.generateSeq();
 	},
-
-	isMatch: false,
 
 	isSame: function(){
 			
 		arr1 = Model.players[0].sequence;
 		arr2 = Model.players[1].sequence;
 
-		if(arr2.length !== arr1.length){
-			return false;
-		}
-
 		for(var i=0; i<arr2.length; i++){
 			if(arr2[i] !== arr1[i]){
+
+				Model.setMsg("WRONG");
 				return false;
 			}
 		}
@@ -84,26 +99,28 @@ var Model = {
 
 	nextTurn: function(){
 
-		var a = Model.isSame();
-		Model.players[1].sequence = [];
+		Model.count += 1;
+		
+		setTimeout(function(){
+		
+			Model.setCounter();
+		
+		},1000);
 
-		if(!a){
-
-			setTimeout(Model.playSeq(), 2000);			
-
-		} else {
-
-			Model.seq_count += 1;
+		setTimeout(function(){
+			
 			Model.generateSeq();
-		}
+			Model.players[1].sequence = [];
+
+		}, 1500);
 	},
 
-	hasWon: false,
-
 	isWinner: function(){
-		if(Model.seq_count > 20){
-			console.log("You win!");
-			return Model.hasWon === true;
+
+		if(Model.count === 10){
+
+			Model.setMsg("YOU WON!");
+		
 		} 
 	}
 	
@@ -111,51 +128,51 @@ var Model = {
 
 var Controller = {
 
-	getView: function(){
+	getBtn: function(){
 		var colorBtns = document.getElementsByClassName("colorBtn");
 
 		for(var i=0; i<colorBtns.length; i++){
 			colorBtns[i].addEventListener("click", Controller.action);
 		}
-
-		var counter = document.getElementById("counter");
-		counter.innerHTML = Controller.model.seq_count;
 	},
 
 	initWith: function(game){
 		game.init();
 		Controller.model = game;
-		Controller.view = Controller.getView();
+		Controller.view = Controller.getBtn();
 	},
 
 	action: function(evt){
 
-		var game = Controller.model;
+		var game = Controller.model;			
+		var el = evt.target;
 
-		while(game.players[1].sequence.length < game.seq_count) {
-			
-			var el = evt.target;
-			
+		game.players[1].sequence.push(el.id);
 
-			game.playEffect(el.id);
+		game.playEffect(el.id, 0);		
 
-			game.players[1].sequence.push(el.id);
-		}	
+		var testMatch = game.isSame();
 			
-		game.isWinner();
+			if(testMatch !== true){
 
-		if(!game.hasWon){
+				game.players[1].sequence = [];
+			
+				setTimeout(function(){
+				
+					game.playSeq();
+				
+				}, 1500);
 
-			game.nextTurn();
-			
-		} else {
-			
-			Controller.end_game();
-		
-		} 	
+			} else {
+
+				if(game.players[0].sequence.length === game.players[1].sequence.length){
+				
+					game.nextTurn();
+			}
+		}
 	},
 
-	end_game: function(){
+	disableBtn: function(){
 		var colorBtns = document.getElementsByClassName("colorBtn");
 
 		for(var i=0; i<colorBtns.length; i++){
