@@ -1,8 +1,24 @@
 window.onload = function(){
 
 	var startBtn = document.getElementById("start");
-	
+	var strictBtn = document.getElementById("strict");
+
 	startBtn.addEventListener("click", function(){
+		
+		startBtn.classList.add("clickedBtn");
+		strictBtn.classList.remove("clickedBtn");
+
+		Model.strictMode = false;
+		Controller.initWith(Model);
+
+	});
+
+	strict.addEventListener("click", function(){
+
+		strictBtn.classList.add("clickedBtn");
+		startBtn.classList.remove("clickedBtn");
+
+		Model.strictMode = true;
 		Controller.initWith(Model);
 	});
 
@@ -24,6 +40,8 @@ var Model = {
 	colorsElmt: ["green", "red", "blue", "yellow"],
 	
 	count: 1,
+
+	strictMode: false,
 
 	setCounter: function(){
 		
@@ -66,10 +84,17 @@ var Model = {
 
 	playSeq: function(){
 		
-		for(var k=0; k<Model.players[0].sequence.length; k++){
+		Controller.disableBtn();
+		var l = Model.players[0].sequence.length;
+		
+		for(var k=0; k<l; k++){
 			
 			Model.playEffect(Model.players[0].sequence[k], k);
 		}
+
+		setTimeout(function(){
+			Controller.getBtn()
+		}, 1000*l);
 	},
 	
 	init: function(){
@@ -113,6 +138,7 @@ var Model = {
 			Model.players[1].sequence = [];
 
 		}, 1500);
+
 	},
 
 	isWinner: function(){
@@ -155,13 +181,27 @@ var Controller = {
 			
 			if(testMatch !== true){
 
-				game.players[1].sequence = [];
+				if(game.strictMode){
+
+					game.setMsg("WRONG. RESTARTING..");
+					
+					setTimeout(function(){
+						
+
+						game.init();
+					
+					}, 1500)
+				
+				} else {
+
+					game.players[1].sequence = [];
 			
-				setTimeout(function(){
+					setTimeout(function(){
 				
-					game.playSeq();
+						game.playSeq();
 				
-				}, 1500);
+					}, 1500);
+				}
 
 			} else {
 
