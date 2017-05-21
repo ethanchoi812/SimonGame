@@ -5,21 +5,26 @@ html {
   background: -webkit-linear-gradient(-45deg, #3f4c6b 0%, black 100%);
   background: linear-gradient(135deg, #3f4c6b 0%, black 100%); }
 
+h1 {
+  font: small-caps 2.5em "Dosis", sans-serif;
+  color: #fff; }
+
 .main-container {
   margin: 0 auto;
-  height: 100vh; }
-  @media all and (min-width: 320px) and (max-width: 607px) {
-    .main-container {
-      width: 100vw; } }
-  @media all and (min-width: 608px) and (max-width: 810px) {
-    .main-container {
-      width: 75vw; } }
-  @media all and (min-width: 811px) and (max-width: 1215px) {
-    .main-container {
-      width: 50vw; } }
+  height: 100vh;
+  text-align: center; }
   @media all and (min-width: 1216px) {
     .main-container {
       width: 40vw; } }
+  @media all and (min-width: 791px) and (max-width: 1215px) {
+    .main-container {
+      width: 50vw; } }
+  @media all and (min-width: 593px) and (max-width: 790px) {
+    .main-container {
+      width: 75vw; } }
+  @media all and (min-width: 320px) and (max-width: 592px) {
+    .main-container {
+      width: 100vw; } }
 
 .colorDiv, .controls, .msgDiv {
   text-align: center;
@@ -27,9 +32,13 @@ html {
 
 .colorBtn {
   display: inline-block;
-  width: 5%;
-  padding: 25px 30px;
+  width: 25px;
+  padding: 40px 45px;
   border-radius: 50%; }
+  @media all and (min-width: 320px) and (max-width: 413px) {
+    .colorBtn {
+      width: 15px;
+      padding: 25px 30px; } }
 
 .green {
   background-color: #00c13a; }
@@ -62,6 +71,11 @@ html {
   margin: 0 auto;
   font: 1em/90% "Inconsolata", monospace;
   color: #fff; }
+  .button:first-of-type {
+    margin-right: 15px; }
+  @media all and (min-width: 320px) and (max-width: 413px) {
+    .button {
+      font-size: 0.8em; } }
 
 .clickedBtn {
   background-color: #fff;

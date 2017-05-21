@@ -9,8 +9,10 @@ window.onload = function(){
 		strictBtn.classList.remove("clickedBtn");
 
 		Model.strictMode = false;
-		Controller.initWith(Model);
-
+		
+		setTimeout(function(){
+			Controller.initWith(Model);
+		}, 500);
 	});
 
 	strict.addEventListener("click", function(){
@@ -19,7 +21,10 @@ window.onload = function(){
 		startBtn.classList.remove("clickedBtn");
 
 		Model.strictMode = true;
-		Controller.initWith(Model);
+
+		setTimeout(function(){
+			Controller.initWith(Model);
+		}, 500);
 	});
 
 }
@@ -84,7 +89,7 @@ var Model = {
 
 	playSeq: function(){
 		
-		Controller.disableBtn();
+		
 		var l = Model.players[0].sequence.length;
 		
 		for(var k=0; k<l; k++){
@@ -93,7 +98,9 @@ var Model = {
 		}
 
 		setTimeout(function(){
-			Controller.getBtn()
+			
+			Controller.getBtn();
+
 		}, 1000*l);
 	},
 	
@@ -107,19 +114,43 @@ var Model = {
 	},
 
 	isSame: function(){
-			
+		
+		Controller.disableBtn();
 		arr1 = Model.players[0].sequence;
 		arr2 = Model.players[1].sequence;
 
 		for(var i=0; i<arr2.length; i++){
+			
 			if(arr2[i] !== arr1[i]){
 
-				Model.setMsg("WRONG");
-				return false;
+				if(Model.strictMode){
+
+					Model.setMsg("WRONG. RESTARTING..");
+					
+					setTimeout(function(){
+
+						Model.init();
+					
+					}, 1500)
+				
+				} else {
+
+					Model.setMsg("WRONG");
+					
+					Model.players[1].sequence = [];
+			
+					setTimeout(function(){
+				
+						Model.playSeq();
+				
+					}, 1500);
+				}
+
+				return false;	
 			}
 		}
 
-		return true;
+		return true; 		 
 	},
 
 	nextTurn: function(){
@@ -145,11 +176,14 @@ var Model = {
 
 		if(Model.count === 10){
 
-			Model.setMsg("YOU WON!");
+			Model.setMsg("YOU'VE WON! RESTARTING..");
+			Model.init();
 		
+		} else {
+					
+			Model.nextTurn();
 		} 
-	}
-	
+	}	
 };
 
 var Controller = {
@@ -177,39 +211,16 @@ var Controller = {
 
 		game.playEffect(el.id, 0);		
 
-		var testMatch = game.isSame();
-			
-			if(testMatch !== true){
+		var same = game.isSame();
 
-				if(game.strictMode){
-
-					game.setMsg("WRONG. RESTARTING..");
+		if(same === true && Model.players[0].sequence.length === Model.players[1].sequence.length){
 					
-					setTimeout(function(){
-						
+			Model.isWinner();	
+		
+		} else {
 
-						game.init();
-					
-					}, 1500)
-				
-				} else {
-
-					game.players[1].sequence = [];
-			
-					setTimeout(function(){
-				
-						game.playSeq();
-				
-					}, 1500);
-				}
-
-			} else {
-
-				if(game.players[0].sequence.length === game.players[1].sequence.length){
-				
-					game.nextTurn();
-			}
-		}
+			Controller.action();
+		}	
 	},
 
 	disableBtn: function(){
