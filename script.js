@@ -83,7 +83,6 @@ var Model = {
 
 		var n = Math.floor(Math.random()*4);
 		Model.players[0].sequence.push(Model.colorsElmt[n]);
-		console.log(Model.players[0].sequence);
 		Model.playSeq();
 	},
 
@@ -115,13 +114,14 @@ var Model = {
 
 	isSame: function(){
 		
-		Controller.disableBtn();
 		arr1 = Model.players[0].sequence;
 		arr2 = Model.players[1].sequence;
 
 		for(var i=0; i<arr2.length; i++){
 			
 			if(arr2[i] !== arr1[i]){
+
+				Controller.disableBtn();
 
 				if(Model.strictMode){
 
@@ -174,10 +174,12 @@ var Model = {
 
 	isWinner: function(){
 
-		if(Model.count === 10){
+		if(Model.count === 20){
 
 			Model.setMsg("YOU'VE WON! RESTARTING..");
-			Model.init();
+			setTimeout(function(){
+				Model.init();
+			}, 1500);
 		
 		} else {
 					
@@ -213,13 +215,10 @@ var Controller = {
 
 		var same = game.isSame();
 
-		if(same === true && Model.players[0].sequence.length === Model.players[1].sequence.length){
-					
-			Model.isWinner();	
-		
-		} else {
-
-			Controller.action();
+		 if (Model.players[0].sequence.length === Model.players[1].sequence.length){
+		 	
+		 	Controller.disableBtn();
+		 	game.isWinner();
 		}	
 	},
 
